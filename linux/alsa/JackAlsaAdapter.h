@@ -30,6 +30,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "jack.h"
 #include "jslist.h"
 
+// -6dB
+#define TA_HEADROOM 0.501187233627
+
 namespace Jack
 {
 
@@ -446,7 +449,7 @@ namespace Jack
                             {
                                 for ( unsigned int c = 0; c < fCardOutputs; c++ )
                                 {
-                                    jack_default_audio_sample_t x = fOutputSoftChannels[c][f];
+                                    jack_default_audio_sample_t x = fOutputSoftChannels[c][f]*TA_HEADROOM;
                                     buffer16b[c + f * fCardOutputs] = short(max(min (x, jack_default_audio_sample_t(1.0)), jack_default_audio_sample_t(-1.0)) * jack_default_audio_sample_t(SHRT_MAX));
                                 }
                             }
@@ -458,7 +461,7 @@ namespace Jack
                             {
                                 for ( unsigned int c = 0; c < fCardOutputs; c++ )
                                 {
-                                    jack_default_audio_sample_t x = fOutputSoftChannels[c][f];
+                                    jack_default_audio_sample_t x = fOutputSoftChannels[c][f]*TA_HEADROOM;
                                     buffer32b[c + f * fCardOutputs] = int32_t(max(min(x, jack_default_audio_sample_t(1.0)), jack_default_audio_sample_t(-1.0)) * jack_default_audio_sample_t(INT_MAX));
                                 }
                             }
@@ -480,7 +483,7 @@ namespace Jack
                                 short* chan16b = ( short* ) fOutputCardChannels[c];
                                 for ( f = 0; f < fBuffering; f++ )
                                 {
-                                    jack_default_audio_sample_t x = fOutputSoftChannels[c][f];
+                                    jack_default_audio_sample_t x = fOutputSoftChannels[c][f]*TA_HEADROOM;
                                     chan16b[f] = short(max(min (x, jack_default_audio_sample_t(1.0)), jack_default_audio_sample_t(-1.0)) * jack_default_audio_sample_t(SHRT_MAX));
                                 }
                             }
@@ -492,7 +495,7 @@ namespace Jack
                                 int32_t* chan32b = ( int32_t* ) fOutputCardChannels[c];
                                 for ( f = 0; f < fBuffering; f++ )
                                 {
-                                    jack_default_audio_sample_t x = fOutputSoftChannels[c][f];
+                                    jack_default_audio_sample_t x = fOutputSoftChannels[c][f]*TA_HEADROOM;
                                     chan32b[f] = int32_t(max(min(x, jack_default_audio_sample_t(1.0)), jack_default_audio_sample_t(-1.0)) * jack_default_audio_sample_t(INT_MAX));
                                 }
                             }
